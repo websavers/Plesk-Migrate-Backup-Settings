@@ -137,7 +137,7 @@ foreach ($table_BackupsScheduled->row as $k => $s){
 			//This domain doesn't exist anymore, but still has old settings in DB
 			if ( ! isset($old_domain_map[$id]) ){
 				$elementsToRemove[] = $s; //We don't need it in the output then
-				continue;
+				continue 2;
 			}
 			$domain = $old_domain_map[$id];
 			$new_id = $new_domain_map[$domain];
@@ -152,7 +152,7 @@ foreach ($table_BackupsScheduled->row as $k => $s){
 			//This client doesn't exist anymore, but still has old settings in DB
 			if ( ! isset($old_client_map[$id]) ){
 				$elementsToRemove[] = $s;
-				continue;
+				continue 2;
 			}
 			$login = $old_client_map[$id];
 			$new_id = $new_client_map[$login];
