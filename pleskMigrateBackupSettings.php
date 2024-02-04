@@ -94,12 +94,18 @@ foreach ($table_BackupsSettings->row as $k => $s){
 
 		case 'client':
 
-			//This client doesn't exist anymore, but still has old settings in DB
+			//Client doesn't exist anymore, but still has old settings in DB
 			if ( ! isset($old_client_map[$id]) ){
 				$elementsToRemove[] = $s;
 				continue 2;
 			}
 			$login = $old_client_map[$id];
+
+			//Client exists on old server but doesn't have any subscriptions that were migrated
+			if ( ! isset($new_client_map[$login]) ){
+				$elementsToRemove[] = $s;
+				continue 2;
+			}
 			$new_id = $new_client_map[$login];
 
 			// Save to XML object
@@ -155,6 +161,12 @@ foreach ($table_BackupsScheduled->row as $k => $s){
 				continue 2;
 			}
 			$login = $old_client_map[$id];
+
+			//Client exists on old server but doesn't have any subscriptions that were migrated
+			if ( ! isset($new_client_map[$login]) ){
+				$elementsToRemove[] = $s;
+				continue 2;
+			}
 			$new_id = $new_client_map[$login];
 
 			// Save to XML object
