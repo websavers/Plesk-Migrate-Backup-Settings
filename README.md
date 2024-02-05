@@ -41,7 +41,7 @@ sed -i '/^local-infile/s/1/0/' /etc/my.cnf && systemctl restart mariadb
 rm /tmp/BackupExcludeFiles.xml /tmp/BackupsScheduled.xml /tmp/BackupsSettings.xml
 ```
 
-# Data Plesk Migrator copies for us with param examples for Dropbox:
+# Data Plesk Migration Manager copies for us with param examples for Dropbox:
 table: cl_param
 
 cl_id: XX
