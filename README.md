@@ -19,6 +19,26 @@ tar -cvzf pleskMigrateBackupSettings.tgz pleskMigrateBackupSettings
 plesk db -Xe "SELECT id,name FROM domains;" > new_domain_id_map.xml
 plesk db -Xe "SELECT id,login FROM clients;" > new_client_id_map.xml
 chmod u+x pleskMigrateBackupSettings.php && ./pleskMigrateBackupSettings.php
+
+# If all is well from that output, run these to import the data into Plesk DB:
+
+sed -i '/^local-infile/s/0/1/' /etc/my.cnf && systemctl restart mariadb
+
+# For some reason Plesk thinks this id should be unique, but it's not... so fix that
+plesk db -e "ALTER TABLE BackupsSettings DROP INDEX id, ADD INDEX id (id, type, param) USING BTREE;"
+
+cp table_BackupsSettings_fixed.xml /tmp/BackupsSettings.xml
+plesk db -e "LOAD XML LOCAL INFILE '/tmp/BackupsSettings.xml' INTO TABLE BackupsSettings;"
+
+cp table_BackupsScheduled_fixed.xml /tmp/BackupsScheduled.xml
+plesk db -e "LOAD XML LOCAL INFILE '/tmp/BackupsScheduled.xml' INTO TABLE BackupsScheduled;"
+
+cp table_BackupExcludeFiles.xml /tmp/BackupExcludeFiles.xml
+plesk db -e "LOAD XML LOCAL INFILE '/tmp/BackupExcludeFiles.xml' INTO TABLE BackupExcludeFiles;"
+
+# Cleanup
+sed -i '/^local-infile/s/1/0/' /etc/my.cnf && systemctl restart mariadb
+rm /tmp/BackupExcludeFiles.xml /tmp/BackupsScheduled.xml /tmp/BackupsSettings.xml
 ```
 
 # Data Plesk Migrator copies for us with param examples for Dropbox:
