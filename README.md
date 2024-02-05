@@ -40,6 +40,10 @@ plesk db -e "LOAD XML LOCAL INFILE '/tmp/BackupExcludeFiles.xml' INTO TABLE Back
 sed -i '/^local-infile/s/1/0/' /etc/my.cnf && systemctl restart mariadb
 rm /tmp/BackupExcludeFiles.xml /tmp/BackupsScheduled.xml /tmp/BackupsSettings.xml
 ```
+4. If you have users with *local* Plesk backups, you'll need to copy the data to the new server. Run this on the source server to use rsync to do that:
+```
+rsync -av /var/lib/psa/dumps/ root@DESTINATION_SERVER_IP:/var/lib/psa/dumps
+```
 
 # Data Plesk Migration Manager copies for us with param examples for Dropbox:
 table: cl_param
