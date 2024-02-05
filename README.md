@@ -1,7 +1,8 @@
-# How to run this script:
+# Requirements
+- Plesk PHP 8.2 on source and destination servers, or edit shebang in PHP script
+- Root or sudo access to both servers
 
-Ensure you have Plesk PHP 8.2 installed
-
+# Instructions
 1. Run on the source server:
 ```
 mkdir pleskMigrateBackupSettings && cd pleskMigrateBackupSettings
@@ -38,14 +39,18 @@ plesk db -e "LOAD XML LOCAL INFILE '/tmp/BackupExcludeFiles.xml' INTO TABLE Back
 
 # Cleanup
 sed -i '/^local-infile/s/1/0/' /etc/my.cnf && systemctl restart mariadb
-rm /tmp/BackupExcludeFiles.xml /tmp/BackupsScheduled.xml /tmp/BackupsSettings.xml
+rm -f /tmp/BackupExcludeFiles.xml /tmp/BackupsScheduled.xml /tmp/BackupsSettings.xml
 ```
 4. If you have users with *local* Plesk backups, you'll need to copy the data to the new server. Run this on the source server to use rsync to do that:
 ```
 rsync -av /var/lib/psa/dumps/ root@DESTINATION_SERVER_IP:/var/lib/psa/dumps
 ```
 
-# Data Plesk Migration Manager copies for us with param examples for Dropbox:
+## Note about cloud backups
+
+The tokens used to connect Plesk to cloud services may be invalidated by the move, particularly if the IP changes. Clients backups will fail in such cases and they'll have to login to reconnect to their cloud service.
+
+## Data Plesk Migration Manager copies for us with param examples for Dropbox:
 table: cl_param
 
 cl_id: XX
